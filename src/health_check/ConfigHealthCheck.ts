@@ -1,7 +1,7 @@
 import HealthCheckI from "./HealthCheckI";
 import MongoDBHealthCheck from "./MongoDBHealthCheck";
 import { RabbitHealthCheck } from "./RabbitHealthCheck";
-import {config} from "../config/index";
+// import {config} from "../config/index";
 
 class ConfigHealthCheck {
   private mongoHealth: HealthCheckI | null;
