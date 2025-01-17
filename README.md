@@ -26,7 +26,8 @@ yarn add actuatorhealth
 - **RabbitMQ**: Checks if the RabbitMQ service is accessible and functioning correctly.
 - **MySQL**: Tests the connection to a MySQL database.
 - **Oracle**: Checks the connection to an Oracle database.
-- **MongoDB**: Tests connectivity with a MongoDB instance.
+- **MongoDB**: Tests connectivity with a MongoDB instance. this feature in construction
+
 
 Each test returns a status that can be used to implement monitoring logic or alerts in your application.
 
@@ -36,6 +37,9 @@ Each test returns a status that can be used to implement monitoring logic or ale
 
 ```javascript
 const Actuator = require('actuatorhealth');
+// or
+// import pkg from 'actuatorhealth'; 
+// const { default: HealthConnector } = pkg; 
 
 // Connection configuration
 const config = {
@@ -61,23 +65,26 @@ const config = {
 // Initialize Actuator
 const actuator = new Actuator(config);
 
-// Test connections
-actuator.checkConnections()
-  .then((results) => {
-    console.log('Connection Status:', results);
-  })
-  .catch((error) => {
-    console.error('Error testing connections:', error);
-  });
+// Test rabbit connection exemple
+app.get('/health/rabbitmq', async (req, res) => {
+  try {
+    const isConnected = await healthConnector.rabbitMQConnection();
+    if (isConnected) {
+      res.status(200).json({ message: 'RabbitMQ connection is healthy' });
+    } else {
+      res.status(500).json({ message: 'Failed to connect to RabbitMQ' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Error while testing RabbitMQ connection', details: error.message });
+  }
+});
 ```
 
 ### Available Methods
-
-- `checkConnections()`: Performs all the connectivity tests defined in the configuration and returns an object with the status of each service.
-- `checkRabbitMQ()`: Tests connectivity with RabbitMQ.
-- `checkMySQL()`: Tests connectivity with MySQL.
-- `checkOracle()`: Tests connectivity with Oracle.
-- `checkMongo()`: Tests connectivity with MongoDB.
+- `rabbitMQConnection()`: Tests connectivity with RabbitMQ.
+- `mySQLConnection()`: Tests connectivity with MySQL.
+- `oracleDBConnection()`: Tests connectivity with Oracle.
+- `mongoDBConnection()`: Tests connectivity with MongoDB. this feature in construction
 
 Each method returns a result object that contains information about the connection status (OK or error) and any additional details about the failure (if any).
 
@@ -128,10 +135,10 @@ The `checkConnections()` method returns an object with the status of each servic
 
 ```javascript
 {
-  rabbitmq: { status: 'OK', message: 'Successfully connected to RabbitMQ' },
-  mysql: { status: 'ERROR', message: 'Failed to connect to MySQL: [error]' },
-  oracle: { status: 'OK', message: 'Successfully connected to Oracle' },
-  mongo: { status: 'OK', message: 'Successfully connected to MongoDB' }
+  rabbitmq: true or false
+  mysql: true or false
+  oracle: true or false
+  // mongo: true or false
 }
 ```
 
@@ -177,7 +184,7 @@ A `actuatorhealth` permite que você faça testes de conectividade com os seguin
 - **RabbitMQ**: Verifica se o serviço RabbitMQ está acessível e funcionando corretamente.
 - **MySQL**: Testa a conexão com um banco de dados MySQL.
 - **Oracle**: Verifica a conexão com um banco de dados Oracle.
-- **MongoDB**: Testa a conectividade com uma instância do MongoDB.
+- **MongoDB**: Testa a conectividade com uma instância do MongoDB. Esta feature ainda esta em produção
 
 Cada teste retorna um status que pode ser utilizado para implementar lógica de monitoramento ou alertas em sua aplicação.
 
@@ -187,6 +194,10 @@ Cada teste retorna um status que pode ser utilizado para implementar lógica de 
 
 ```javascript
 const Actuator = require('actuatorhealth');
+// or 
+// import pkg from 'actuatorhealth'; 
+// const { default: HealthConnector } = pkg; 
+
 
 // Configuração de conexões
 const config = {
@@ -212,23 +223,26 @@ const config = {
 // Inicializa o Actuator
 const actuator = new Actuator(config);
 
-// Teste as conexões
-actuator.checkConnections()
-  .then((results) => {
-    console.log('Status das Conexões:', results);
-  })
-  .catch((error) => {
-    console.error('Erro ao testar conexões:', error);
-  });
+// Teste as conexões com rabbit de exemplo
+app.get('/health/rabbitmq', async (req, res) => {
+  try {
+    const isConnected = await healthConnector.rabbitMQConnection();
+    if (isConnected) {
+      res.status(200).json({ message: 'RabbitMQ connection is healthy' });
+    } else {
+      res.status(500).json({ message: 'Failed to connect to RabbitMQ' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Error while testing RabbitMQ connection', details: error.message });
+  }
+});
 ```
 
 ### Métodos Disponíveis
-
-- `checkConnections()`: Realiza todos os testes de conectividade definidos na configuração e retorna um objeto com o status de cada serviço.
-- `checkRabbitMQ()`: Testa a conectividade com RabbitMQ.
-- `checkMySQL()`: Testa a conectividade com MySQL.
-- `checkOracle()`: Testa a conectividade com Oracle.
-- `checkMongo()`: Testa a conectividade com MongoDB.
+- `rabbitMQConnection()`: Testa a conectividade com RabbitMQ.
+- `mySQLConnection()`: Testa a conectividade com MySQL.
+- `oracleDBConnection()`: Testa a conectividade com Oracle.
+- `mongoDBConnection()`: Testa a conectividade com MongoDB.
 
 Cada método retorna um objeto de resultado que contém as informações sobre o status da conexão (OK ou erro) e quaisquer detalhes adicionais sobre a falha (se houver).
 
@@ -279,10 +293,10 @@ O método `checkConnections()` retorna um objeto com o status de cada serviço. 
 
 ```javascript
 {
-  rabbitmq: { status: 'OK', message: 'Conexão bem-sucedida com RabbitMQ' },
-  mysql: { status: 'ERROR', message: 'Falha ao conectar ao MySQL: [erro]' },
-  oracle: { status: 'OK', message: 'Conexão bem-sucedida com Oracle' },
-  mongo: { status: 'OK', message: 'Conexão bem-sucedida com MongoDB' }
+  rabbitmq: true or false
+  mysql: true or false
+  oracle: true or false
+  // mongo: true or false
 }
 ```
 
